@@ -22,9 +22,9 @@ def load_and_prepare_data(file_path, date_columns):
     
     return df
 
-df_pm = load_and_prepare_data('data_bawang_merah_pm.xlsx', ["Date"])
-df_pw = load_and_prepare_data('data_bawang_merah_pw.xlsx', ["Date"])
-df_gab = load_and_prepare_data('data_bawang_merah.xlsx', ["Date"])
+df_pm = load_and_prepare_data('dashboard/data_bawang_merah_pm.xlsx', ["Date"])
+df_pw = load_and_prepare_data('dashboard/data_bawang_merah_pw.xlsx', ["Date"])
+df_gab = load_and_prepare_data('dashboard/data_bawang_merah.xlsx', ["Date"])
 
 min_date = df_gab["Date"].min()
 max_date = df_gab["Date"].max()
