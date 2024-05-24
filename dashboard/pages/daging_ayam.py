@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
 from streamlit_folium import st_folium
-import locale
 from babel.numbers import format_currency
 import folium
 from streamlit_folium import folium_static
@@ -12,8 +11,6 @@ from io import BytesIO
 sns.set(style='dark')
 
 st.set_page_config(layout="wide")
-locale.setlocale(locale.LC_ALL, 'id_ID')
-
 # Load data
 def load_and_prepare_data(file_path, date_columns):
     # Memuat data dari file Excel
@@ -25,9 +22,9 @@ def load_and_prepare_data(file_path, date_columns):
     
     return df
 
-df_pm = load_and_prepare_data('data_daging_ayam_pm.xlsx', ["Date"])
-df_pw = load_and_prepare_data('data_daging_ayam_pw.xlsx', ["Date"])
-df_gab = load_and_prepare_data('data_daging_ayam.xlsx', ["Date"])
+df_pm = load_and_prepare_data('dashboard/data_daging_ayam_pm.xlsx', ["Date"])
+df_pw = load_and_prepare_data('dashboard/data_daging_ayam_pw.xlsx', ["Date"])
+df_gab = load_and_prepare_data('dashboard/data_daging_ayam.xlsx', ["Date"])
 
 min_date = df_pm["Date"].min()
 max_date = df_pm["Date"].max()
@@ -154,7 +151,13 @@ df3['Date'] = pd.to_datetime(df3['Date'])
 df3['Date'] = df3['Date'].dt.strftime('%Y-%m-%d')
 
 # Mengonversi kolom Currency menjadi format mata uang Rupiah
-df3['Pasar Manis'] = df3['Pasar Manis'].apply(lambda x: locale.currency(x, grouping=True) if pd.notnull(x) else x)
-df3['Pasar Wage'] = df3['Pasar Wage'].apply(lambda x: locale.currency(x, grouping=True)if pd.notnull(x) else x)
+def format_rupiah(x):
+    if pd.notnull(x):
+        return 'Rp {:,.2f}'.format(x).replace(',', '.')
+    else:
+        return x
+
+df3['Pasar Manis'] = df3['Pasar Manis'].apply(format_rupiah)
+df3['Pasar Wage'] = df3['Pasar Wage'].apply(format_rupiah)
 
 st.dataframe(df3.iloc[:,1:], use_container_width=True, hide_index=True)
