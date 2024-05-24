@@ -8,7 +8,7 @@ st.set_page_config(layout="wide")
 st.header('Model Peramalan Harga Daging Ayam :sparkles:')
 
 # Load Model 
-loaded_model = load_model("bestModel_lstm.h5")
+loaded_model = load_model("dashboard/bestModel_lstm.h5")
 
 # Prepare Data
 df = pd.read_csv('data_daging_ayam_clean23.csv')
