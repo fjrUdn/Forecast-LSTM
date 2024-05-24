@@ -166,4 +166,4 @@ df3['Pasar Wage'] = df3['Pasar Wage'].apply(format_rupiah)
 # df3['Pasar Manis'] = df3['Pasar Manis'].apply(lambda x: locale.currency(x, grouping=True) if pd.notnull(x) else x)
 # df3['Pasar Wage'] = df3['Pasar Wage'].apply(lambda x: locale.currency(x, grouping=True)if pd.notnull(x) else x)
 
-st.dataframe(df3.iloc[:,2:], use_container_width=True, hide_index=True)
+st.dataframe(df3.iloc[:,2:], use_container_width=True)
