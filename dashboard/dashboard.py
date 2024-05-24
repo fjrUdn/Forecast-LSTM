@@ -11,11 +11,11 @@ st.header('Model Peramalan Harga Daging Ayam :sparkles:')
 loaded_model = load_model("dashboard/bestModel_lstm.h5")
 
 # Prepare Data
-df = pd.read_csv('data_daging_ayam_clean23.csv')
+df = pd.read_csv('dashboard/data_daging_ayam_clean23.csv')
 df['tanggal'] = pd.to_datetime(df['tanggal'])
 df = df.set_index('tanggal')
 
-df1 = pd.read_csv('data_bawang_merah_clean23.csv')
+df1 = pd.read_csv('dashboard/data_bawang_merah_clean23.csv')
 df1['tanggal'] = pd.to_datetime(df1['tanggal'])
 df1 = df1.set_index('tanggal')
 
@@ -111,8 +111,8 @@ def main():
     bawang_pw = forecast_data(df1,'pasar wage', loaded_model, scale, number)
     ayam_gab = merge_forecast_data(ayam_pm, ayam_pw)
     bawang_gab = merge_forecast_data(bawang_pm, bawang_pw)
-    ayam_gab.to_excel("data_daging_ayam.xlsx")
-    bawang_gab.to_excel("data_bawang_merah.xlsx")
+    ayam_gab.to_excel("dashboard/data_daging_ayam.xlsx")
+    bawang_gab.to_excel("dashboard/data_bawang_merah.xlsx")
     st.write("Sukses")
 
 if __name__ == "__main__":
