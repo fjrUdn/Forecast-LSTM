@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
 from streamlit_folium import st_folium
-import locale
 from babel.numbers import format_currency
 import folium
 from streamlit_folium import folium_static
@@ -12,8 +11,6 @@ from io import BytesIO
 sns.set(style='dark')
 
 st.set_page_config(layout="wide")
-locale.setlocale(locale.LC_ALL, 'id_ID.utf8')
-
 # Load data
 def load_and_prepare_data(file_path, date_columns):
     # Memuat data dari file Excel
