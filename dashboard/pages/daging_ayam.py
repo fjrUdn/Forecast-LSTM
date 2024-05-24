@@ -162,5 +162,6 @@ def format_rupiah(x):
 
 df3['Pasar Manis'] = df3['Pasar Manis'].apply(format_rupiah)
 df3['Pasar Wage'] = df3['Pasar Wage'].apply(format_rupiah)
+df_reset = df3.reset_index(drop=True)
 
-st.dataframe(df3.iloc[:,3:], use_container_width=True)
+st.dataframe(df_reset.iloc[:,2:], use_container_width=True)
