@@ -5,7 +5,7 @@ from keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
 
 st.set_page_config(layout="wide")
-st.header('Model Peramalan Harga Daging Ayam :sparkles:')
+st.header('Model Peramalan Harga Komoditas Pangan (LSTM) :sparkles:')
 
 # Load Model 
 loaded_model = load_model("dashboard/bestModel_lstm.h5")
