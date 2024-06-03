@@ -114,7 +114,7 @@ def main():
     ayam_gab.to_excel("dashboard/data_daging_ayam.xlsx")
     bawang_gab.to_excel("dashboard/data_bawang_merah.xlsx")
     st.write("Sukses")
-    st.switch_page("pages/bawang_merah.py")
+    st.write("Silahkan klik tombol bawang merah atau daging ayam di sebelah kiri untuk melihat hasil")    
 if __name__ == "__main__":
     number = st.number_input("Masukkan angka sesuai kebutuhan Anda untuk meramalkan jumlah hari", value=0)
     if number > 0:
