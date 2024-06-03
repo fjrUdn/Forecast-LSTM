@@ -114,7 +114,7 @@ def main():
     ayam_gab.to_excel("dashboard/data_daging_ayam.xlsx")
     bawang_gab.to_excel("dashboard/data_bawang_merah.xlsx")
     st.write("Sukses")
-    st.page_link("bawang_merah.py", label="Silahkan klik disini untuk melihat hasil")
+    st.link_button("Silahkan klik disini untuk melihat hasil", "https://forecast-lstm-pasar-banyumas.streamlit.app/bawang_merah")
 
 if __name__ == "__main__":
     number = st.number_input("Masukkan angka sesuai kebutuhan Anda untuk meramalkan jumlah hari", value=0)
