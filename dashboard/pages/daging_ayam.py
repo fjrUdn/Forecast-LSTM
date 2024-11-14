@@ -7,6 +7,7 @@ from babel.numbers import format_currency
 import folium
 from streamlit_folium import folium_static
 import base64
+import config.data as data_config
 from io import BytesIO
 sns.set(style='dark')
 
@@ -22,9 +23,9 @@ def load_and_prepare_data(file_path, date_columns):
     
     return df
 
-df_pm = load_and_prepare_data('dashboard/data_daging_ayam_pm.xlsx', ["Date"])
-df_pw = load_and_prepare_data('dashboard/data_daging_ayam_pw.xlsx', ["Date"])
-df_gab = load_and_prepare_data('dashboard/data_daging_ayam.xlsx', ["Date"])
+df_pm = load_and_prepare_data(f'{data_config.BASE_PATH}/data_daging_ayam_pm.xlsx', ["Date"])
+df_pw = load_and_prepare_data(f'{data_config.BASE_PATH}/data_daging_ayam_pw.xlsx', ["Date"])
+df_gab = load_and_prepare_data(f'{data_config.BASE_PATH}/data_daging_ayam.xlsx', ["Date"])
 
 min_date = df_gab["Date"].min()
 max_date = df_gab["Date"].max()
@@ -41,21 +42,21 @@ with st.sidebar:
         value=[min_date, max_date]
     )
 
-df1 = df_pm[(df_pm["Date"] >= str(start_date)) & 
+df1 = df_pm[(df_pm["Date"] >= str(start_date)) &
                 (df_pm["Date"] <= str(end_date))]
-df1['Date'] = pd.to_datetime(df1['Date'])
+df1.loc[:, 'Date'] = pd.to_datetime(df1['Date'])
 
 df_pm.set_index('Date', inplace=True)
 
-df2 = df_pw[(df_pw["Date"] >= str(start_date)) & 
+df2 = df_pw[(df_pw["Date"] >= str(start_date)) &
                 (df_pw["Date"] <= str(end_date))]
-df2['Date'] = pd.to_datetime(df2['Date'])
+df2.loc[:, 'Date'] = pd.to_datetime(df2['Date'])
 
 df_pw.set_index('Date', inplace=True)
 
-df3 = df_gab[(df_gab["Date"] >= str(start_date)) & 
+df3 = df_gab[(df_gab["Date"] >= str(start_date)) &
                 (df_gab["Date"] <= str(end_date))]
-df3['Date'] = pd.to_datetime(df3['Date'])
+df3.loc[:, 'Date'] = pd.to_datetime(df3['Date'])
 
 df_gab.set_index('Date', inplace=True)
 
