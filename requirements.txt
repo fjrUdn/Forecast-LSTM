@@ -89,7 +89,7 @@ Pympler==1.1
 pyparsing==3.0.9
 python-dateutil==2.9.0.post0
 pytz==2024.2
-pywin32==308
+pywin32
 pyzmq==26.2.0
 referencing==0.35.1
 requests==2.32.3
@@ -106,8 +106,8 @@ six==1.16.0
 smmap==5.0.1
 soupsieve==2.6
 stack-data==0.6.3
-#streamlit==1.39.0
-#streamlit-folium==0.18.0
+streamlit==1.39.0
+streamlit-folium==0.18.0
 tenacity==9.0.0
 tensorboard==2.9.1
 tensorboard-data-server==0.6.1
