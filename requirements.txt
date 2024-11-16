@@ -105,7 +105,7 @@ six==1.16.0
 smmap==5.0.1
 soupsieve==2.6
 stack-data==0.6.3
-streamlit==1.40.1
+#streamlit==1.40.1
 streamlit-folium==0.18.0
 tenacity==9.0.0
 tensorboard==2.9.1
