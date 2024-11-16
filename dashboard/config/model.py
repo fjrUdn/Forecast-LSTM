@@ -1,5 +1,5 @@
 # Get the base models path, for now on ./models
-BASE_PATH = "./models"
+BASE_PATH = "./dashboard/models"
 
 # Name of the model file
 MODEL_FILE_NAME = f"{BASE_PATH}/bestModel_lstm.h5"
