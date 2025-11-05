@@ -6,36 +6,37 @@ import numpy as np
 
 def make_forecast(df, column_name, loaded_model, scale, forecast_steps=93):
     look_back=1
-    historical_data = df[column_name].iloc[0:]
-    # # Fit scaler pada kolom tertentu jika belum dilakukan
-    # scale.fit(df[[column_name]])
+    historical_data = df[column_name].values
+    
+    # Pre-reshape historical data once
+    historical_data_reshaped = historical_data.reshape(-1, 1)
 
     x_forecast = []
     y_forecast = []
 
-    for i in range(len(historical_data.values.reshape(len(historical_data), 1)) - look_back):
-        a = historical_data.values.reshape(len(historical_data), 1)[i:(i + look_back), 0]
-        x_forecast.append(a)
-        y_forecast.append(historical_data.values.reshape(len(historical_data), 1)[i + look_back, 0])
+    for i in range(len(historical_data_reshaped) - look_back):
+        x_forecast.append(historical_data_reshaped[i:(i + look_back), 0])
+        y_forecast.append(historical_data_reshaped[i + look_back, 0])
 
     x_forecast = np.array(x_forecast)
     y_forecast = np.array(y_forecast)
 
     x_forecast = x_forecast.reshape(x_forecast.shape[0], 1, x_forecast.shape[1])
-    # Use last X values to forecast future steps
-    pred_forecast = loaded_model.predict(x_forecast[-forecast_steps:])
+    
+    # Batch predict instead of predicting forecast_steps separately
+    pred_forecast = loaded_model.predict(x_forecast[-forecast_steps:], verbose=0)
 
-    # Append forecasted values to historical data
+    # Iteratively forecast future values
     forecasted_values = []
+    last_input = x_forecast[-1:, :, :]  # Keep the last sequence
+    
     for i in range(forecast_steps):
-        # Assuming input sequence length is 5
-        next_input = np.append(x_forecast[-1, 0, 1:], pred_forecast[i])
-        # Reshape for LSTM model input
-        next_input = next_input.reshape(1, 1, look_back)
-
         # Predict the next value
-        next_pred = loaded_model.predict(next_input)
+        next_pred = loaded_model.predict(last_input, verbose=0)
         forecasted_values.append(next_pred[0])
+        
+        # Update input for next iteration
+        last_input = next_pred.reshape(1, 1, look_back)
 
     last_date = df.index[-1]  # Ambil tanggal terakhir dalam data
     future_index = pd.date_range(
@@ -43,16 +44,20 @@ def make_forecast(df, column_name, loaded_model, scale, forecast_steps=93):
         periods=forecast_steps,
         freq='D'
     )
+    
+    # Flatten and reshape once
+    forecasted_values_flat = np.array(forecasted_values).flatten()
     forecast_df = pd.DataFrame({
-        'Forecast': np.array(forecasted_values).flatten()
+        'Forecast': forecasted_values_flat
         }, index=future_index)
 
+    # Batch inverse transform
     forecasted_values_denormalized = scale.inverse_transform(
-        forecast_df['Forecast'].values.reshape(-1, 1)
+        forecasted_values_flat.reshape(-1, 1)
     ).flatten()
 
     historical_data_denormalized = scale.inverse_transform(
-        historical_data.values.reshape(-1, 1)
+        historical_data_reshaped
     ).flatten()
 
     historical_data_denorm_df = pd.DataFrame({

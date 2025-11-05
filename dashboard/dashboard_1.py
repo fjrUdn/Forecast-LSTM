@@ -21,19 +21,30 @@ MODEL_PATH = model_config.MODEL_FILE_NAME
 DATA_BAWANG = data_config.DATA_BAWANG_MERAH
 DATA_AYAM = data_config.DATA_DAGING_AYAM
 
-# Load Model
-loaded_model = load_model(MODEL_PATH)
+@st.cache_resource
+def load_lstm_model(model_path):
+    '''Cache the model loading to avoid reloading on every run'''
+    return load_model(model_path)
 
-# import dan scaling data
-df_bawang = import_data(DATA_BAWANG)
-df_ayam = import_data(DATA_AYAM)
+@st.cache_data
+def load_and_scale_data(data_path):
+    '''Cache data loading and scaling to avoid reprocessing'''
+    df = import_data(data_path)
+    scale = MinMaxScaler()
+    
+    # Fit scaler on both columns together for consistency
+    df_scaled = df.copy()
+    df_scaled['pasar manis'] = scale.fit_transform(df[['pasar manis']])
+    df_scaled['pasar wage'] = scale.fit_transform(df[['pasar wage']])
+    
+    return df_scaled, scale
 
-# buat objek scaler
-scale = MinMaxScaler()
-df_bawang['pasar manis'] = scale.fit_transform(df_bawang[['pasar manis']])
-df_bawang['pasar wage'] = scale.fit_transform(df_bawang[['pasar wage']])
-df_ayam['pasar manis'] = scale.fit_transform(df_ayam[['pasar manis']])
-df_ayam['pasar wage'] = scale.fit_transform(df_ayam[['pasar wage']])
+# Load Model (cached)
+loaded_model = load_lstm_model(MODEL_PATH)
+
+# Import and scale data (cached)
+df_bawang, scale_bawang = load_and_scale_data(DATA_BAWANG)
+df_ayam, scale_ayam = load_and_scale_data(DATA_AYAM)
 
 st.set_page_config(layout="wide")
 st.header('Model Peramalan Harga Komoditas Pangan (LSTM) :sparkles:')
@@ -48,10 +59,10 @@ def main():
     st.write("Forecast data....")
 
     # Buat forecast data
-    bawang_pm = make_forecast(df_bawang,'pasar manis', loaded_model, scale, forecast_days)
-    bawang_pw = make_forecast(df_bawang,'pasar wage', loaded_model, scale, forecast_days)
-    ayam_pm = make_forecast(df_ayam,'pasar manis', loaded_model, scale, forecast_days)
-    ayam_pw = make_forecast(df_ayam,'pasar wage', loaded_model, scale, forecast_days)
+    bawang_pm = make_forecast(df_bawang,'pasar manis', loaded_model, scale_bawang, forecast_days)
+    bawang_pw = make_forecast(df_bawang,'pasar wage', loaded_model, scale_bawang, forecast_days)
+    ayam_pm = make_forecast(df_ayam,'pasar manis', loaded_model, scale_ayam, forecast_days)
+    ayam_pw = make_forecast(df_ayam,'pasar wage', loaded_model, scale_ayam, forecast_days)
 
     # loading..
     st.write("Hampir selesai....")

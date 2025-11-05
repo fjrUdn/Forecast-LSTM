@@ -7,9 +7,9 @@ def merge_forecast_data(forecast_pm, forecast_pw):
     '''
     Method ini digunakan untuk menggabungkan data hasil peramalan
     '''
-    # Convert to DataFrames
-    data_df_pm = pd.DataFrame(forecast_pm)
-    data_df_pw = pd.DataFrame(forecast_pw)
+    # DataFrames are already passed in, no need to convert
+    data_df_pm = forecast_pm if isinstance(forecast_pm, pd.DataFrame) else pd.DataFrame(forecast_pm)
+    data_df_pw = forecast_pw if isinstance(forecast_pw, pd.DataFrame) else pd.DataFrame(forecast_pw)
 
     # Add "Pasar Manis" column by filling values from "Historical Data" and "Forecast"
     data_df_pm['Pasar Manis'] = data_df_pm['Historical Data'].combine_first(data_df_pm['Forecast'])
@@ -17,8 +17,8 @@ def merge_forecast_data(forecast_pm, forecast_pw):
     # Add "Pasar Wage" column by filling values from "Historical Data" and "Forecast"
     data_df_pw['Pasar Wage'] = data_df_pw['Historical Data'].combine_first(data_df_pw['Forecast'])
 
-    # Create "Keterangan" column
-    data_df_pm['Keterangan'] = ['Historical Data' if pd.notna(x) else 'Forecast' for x in data_df_pm['Historical Data']]
+    # Create "Keterangan" column using vectorized operation
+    data_df_pm['Keterangan'] = data_df_pm['Historical Data'].notna().map({True: 'Historical Data', False: 'Forecast'})
 
     # Merge DataFrames based on index
     final_df = pd.DataFrame({
