@@ -12,9 +12,10 @@ from io import BytesIO
 sns.set(style='dark')
 
 st.set_page_config(layout="wide")
-# Load data
+
+@st.cache_data
 def load_and_prepare_data(file_path, date_columns):
-    # Memuat data dari file Excel
+    '''Memuat data dari file Excel dengan caching'''
     df = pd.read_excel(file_path)
     df.sort_values(by=date_columns, inplace=True)
     df.reset_index(inplace=True)
@@ -23,6 +24,7 @@ def load_and_prepare_data(file_path, date_columns):
     
     return df
 
+# Load data (cached)
 df_pm = load_and_prepare_data(f'{data_config.BASE_PATH}/data_daging_ayam_pm.xlsx', ["Date"])
 df_pw = load_and_prepare_data(f'{data_config.BASE_PATH}/data_daging_ayam_pw.xlsx', ["Date"])
 df_gab = load_and_prepare_data(f'{data_config.BASE_PATH}/data_daging_ayam.xlsx', ["Date"])
@@ -43,20 +45,17 @@ with st.sidebar:
     )
 
 df1 = df_pm[(df_pm["Date"] >= str(start_date)) &
-                (df_pm["Date"] <= str(end_date))]
-df1.loc[:, 'Date'] = pd.to_datetime(df1['Date'])
+                (df_pm["Date"] <= str(end_date))].copy()
 
 df_pm.set_index('Date', inplace=True)
 
 df2 = df_pw[(df_pw["Date"] >= str(start_date)) &
-                (df_pw["Date"] <= str(end_date))]
-df2.loc[:, 'Date'] = pd.to_datetime(df2['Date'])
+                (df_pw["Date"] <= str(end_date))].copy()
 
 df_pw.set_index('Date', inplace=True)
 
 df3 = df_gab[(df_gab["Date"] >= str(start_date)) &
-                (df_gab["Date"] <= str(end_date))]
-df3.loc[:, 'Date'] = pd.to_datetime(df3['Date'])
+                (df_gab["Date"] <= str(end_date))].copy()
 
 df_gab.set_index('Date', inplace=True)
 
@@ -150,8 +149,7 @@ with st.expander("Find market on maps", expanded=True):
 ##-----------------------------------------
 st.subheader('List Harga')
 # tabel bawah
-df3['Date'] = pd.to_datetime(df3['Date'])
-# Mengonversi kolom 'Date' menjadi format string tanpa waktu
+# Date is already in datetime format, just format as string
 df3['Date'] = df3['Date'].dt.strftime('%Y-%m-%d')
 
 # Mengonversi kolom Currency menjadi format mata uang Rupiah
